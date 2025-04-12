@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
 const suspects = [
-  { code: "D", name: "Desmond Duncan" },
-  { code: "E", name: "Emily Eckhart" },
-  { code: "Q", name: "Quinton Quills" },
-  { code: "R", name: "Remedios del Real" },
-  { code: "Y", name: "Yoriko Yagami" },
-  { code: "Z", name: "Zachariah Zilber" },
+  { code: "D", name: "데스먼드 던컨" },
+  { code: "E", name: "에밀리 에크하트" },
+  { code: "Q", name: "퀸튼 퀼스" },
+  { code: "R", name: "레메디오스 델 리얼" },
+  { code: "Y", name: "요리코 야가미" },
+  { code: "Z", name: "자카리아 질버" },
 ];
 
 const weapons = {
@@ -19,24 +19,24 @@ const weapons = {
 };
 
 const motives = {
-  1: "Ancestral Affront",
-  2: "Professional Rivalry",
-  5: "Financial Dispute",
-  6: "Hidden Affair",
-  12: "Lethal Jealousy",
-  13: "Political Motive",
-  14: "Inheritance Conflict",
-  17: "Public Humiliation",
+  1: "조상 모욕에 대한 복수",
+  2: "직업적 경쟁 관계",
+  5: "금전적 분쟁",
+  6: "숨겨진 불륜",
+  12: "질투심에 의한 살인",
+  13: "정치적 동기",
+  14: "유산 상속 문제",
+  17: "공공 망신에 대한 보복",
 };
 
-const rooms = ["Study", "Tea Room", "Bathroom", "Dining Room", "Gallery", "Guest House", "Vestibule", "Bedroom"];
+const rooms = ["서재", "찻방", "욕실", "식당", "갤러리", "게스트 하우스", "현관 홀", "침실"];
 const traces = [
-  "Heavy bleeding",
-  "Defensive wounds",
-  "Torn clothing",
-  "Cyanosis or bruises",
-  "Burn marks",
-  "Gunpowder residue",
+  "과다 출혈",
+  "방어 흔적",
+  "찢어진 옷",
+  "시반 또는 멍",
+  "화상 흔적",
+  "화약 잔여물",
 ];
 
 function getRandomItems(arr, count) {
@@ -56,14 +56,14 @@ function generateCase() {
   const fakeEvidenceRooms = getRandomItems(rooms, 3);
 
   return {
-    범인: `${suspect.name} (${suspect.code})`,
-    동기: `#${motive} – ${motives[motive]}`,
-    무기: `${weaponName} (${weaponType})`,
-    경로: path.join(" → "),
-    무기발견장소: weaponRoom,
-    제거된포렌식: traceRemoved,
-    페이크동기: fakeMotives.map(m => `#${m}`),
-    페이크증거위치: fakeEvidenceRooms,
+    "용의자": `${suspect.name} (${suspect.code})`,
+    "범행 동기": `#${motive} – ${motives[motive]}`,
+    "살해 도구": `${weaponName} (${weaponType})`,
+    "이동 경로": path.join(" → "),
+    "무기 발견 장소": weaponRoom,
+    "제거된 포렌식 흔적": traceRemoved,
+    "가짜 동기 번호": fakeMotives.map(m => `#${m}`),
+    "가짜 증거 위치": fakeEvidenceRooms,
   };
 }
 
@@ -72,7 +72,7 @@ function App() {
 
   return (
     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>🕵️ 사건 생성기</h1>
+      <h1>🕵️ 버윅 미스터리 사건 생성기 🔍</h1>
       <button onClick={() => setCaseData(generateCase())}>사건 생성하기</button>
 
       {caseData && (
@@ -87,3 +87,4 @@ function App() {
 }
 
 export default App;
+

@@ -62,26 +62,6 @@ const roomGraph = {
   "침실": ["욕실", "온실", "서재"]
 };
 
-function getPaths(start, end, graph) {
-  const paths = [];
-  const dfs = (current, path) => {
-    if (path.length === 5 && current === end) {
-      paths.push([...path]);
-      return;
-    }
-    if (path.length >= 5) return;
-    for (const next of graph[current] || []) {
-      if (!path.includes(next)) {
-        path.push(next);
-        dfs(next, path);
-        path.pop();
-      }
-    }
-  };
-  dfs(start, [start]);
-  return paths;
-}
-
 // 사건 생성 함수
 function generateCase({ includeFakeTestimonies = false, includeFakeEvidence = false }) {
   const startRooms = ["게스트 하우스", "현관 홀", "찻방", "대기실"];
@@ -110,13 +90,35 @@ function generateCase({ includeFakeTestimonies = false, includeFakeEvidence = fa
 
   // 가짜 증언과 가짜 증거를 포함하려면, 그 데이터를 추가합니다.
   if (includeFakeTestimonies) {
-    result["가짜 증언"] = "진술 추가됨"; // 여기에 가짜 증언 생성 로직 추가
+    result["가짜 증언"] = generateFakeTestimonies();
   }
   if (includeFakeEvidence) {
-    result["가짜 증거"] = "증거 추가됨"; // 여기에 가짜 증거 생성 로직 추가
+    result["가짜 증거"] = generateFakeEvidence();
   }
 
   return result;
+}
+
+// 가짜 증언 생성
+function generateFakeTestimonies() {
+  const fakeTestimonies = [
+    "가짜 증언 1",
+    "가짜 증언 2",
+    "가짜 증언 3",
+    "가짜 증언 4",
+    "가짜 증언 5",
+  ];
+  return fakeTestimonies[Math.floor(Math.random() * fakeTestimonies.length)];
+}
+
+// 가짜 증거 생성
+function generateFakeEvidence() {
+  const fakeEvidence = [
+    "가짜 증거 1",
+    "가짜 증거 2",
+    "가짜 증거 3",
+  ];
+  return fakeEvidence[Math.floor(Math.random() * fakeEvidence.length)];
 }
 
 function App() {
@@ -164,4 +166,3 @@ function App() {
 }
 
 export default App;
-

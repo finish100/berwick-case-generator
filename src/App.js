@@ -127,5 +127,74 @@ function App() {
   );
 }
 
+generateCase({ includeFakeTestimonies: true, includeFakeEvidence: false })
+import { useState } from 'react';
+
+const suspects = [
+  { code: "D", name: "데스먼드 던컨", validMotives: [1, 2, 3] },
+  { code: "E", name: "에밀리 에크하트", validMotives: [4, 5, 6] },
+  { code: "Q", name: "퀸튼 퀼스", validMotives: [7, 8, 9] },
+  { code: "R", name: "레메디오스 델 리얼", validMotives: [10, 11, 12] },
+  { code: "Y", name: "요리코 야가미", validMotives: [13, 14, 15] },
+  { code: "Z", name: "자카리아 질버", validMotives: [16, 17, 18] },
+];
+
+function App() {
+  const [includeFakes, setIncludeFakes] = useState({ testimonies: false, evidence: false });
+  const [caseData, setCaseData] = useState(null);
+
+  async function generateCaseWithOptions() {
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(includeFakes),
+    });
+    const data = await res.json();
+    setCaseData(data);
+  }
+
+  return (
+    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
+      <h1>🕵️ 버윅 미스터리 사건 생성기 🔍</h1>
+
+      <label>
+        <input
+          type="checkbox"
+          checked={includeFakes.testimonies}
+          onChange={(e) => setIncludeFakes({ ...includeFakes, testimonies: e.target.checked })}
+        />{' '}
+        가짜 증언 포함
+      </label>
+      <br />
+      <label>
+        <input
+          type="checkbox"
+          checked={includeFakes.evidence}
+          onChange={(e) => setIncludeFakes({ ...includeFakes, evidence: e.target.checked })}
+        />{' '}
+        가짜 증거 포함
+      </label>
+      <br /><br />
+      <button onClick={generateCaseWithOptions}>사건 생성하기</button>
+
+      {caseData && (
+        <div style={{ marginTop: "2rem", border: "1px solid #ccc", padding: "1rem", borderRadius: "8px" }}>
+          {Object.entries(caseData).map(([key, value]) => (
+            <p key={key}>
+              <strong>{key}:</strong>{' '}
+              {Array.isArray(value) ? (
+                <ul>{value.map((v, i) => <li key={i}>{v}</li>)}</ul>
+              ) : (
+                value
+              )}
+            </p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default App;
+
 

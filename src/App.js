@@ -82,7 +82,8 @@ function getPaths(start, end, graph) {
   return paths;
 }
 
-function generateCase() {
+// 사건 생성 함수
+function generateCase({ includeFakeTestimonies = false, includeFakeEvidence = false }) {
   const startRooms = ["게스트 하우스", "현관 홀", "찻방", "대기실"];
   const start = startRooms[Math.floor(Math.random() * startRooms.length)];
   const allPaths = getPaths(start, "침실", roomGraph).filter(path =>
@@ -97,7 +98,7 @@ function generateCase() {
   const suspect = suspects[Math.floor(Math.random() * suspects.length)];
   const motiveNum = suspect.validMotives[Math.floor(Math.random() * suspect.validMotives.length)];
 
-  return {
+  const result = {
     "용의자": `${suspect.name} (${suspect.code})`,
     "범행 동기": `#${motiveNum} – ${motiveDict[motiveNum]}`,
     "시작 방": start,
@@ -106,51 +107,25 @@ function generateCase() {
     "살해 도구": `${weaponNum}번 – ${weapon.type}`,
     "포렌식 징후": weapon.signs.join(", ")
   };
+
+  // 가짜 증언과 가짜 증거를 포함하려면, 그 데이터를 추가합니다.
+  if (includeFakeTestimonies) {
+    result["가짜 증언"] = "진술 추가됨"; // 여기에 가짜 증언 생성 로직 추가
+  }
+  if (includeFakeEvidence) {
+    result["가짜 증거"] = "증거 추가됨"; // 여기에 가짜 증거 생성 로직 추가
+  }
+
+  return result;
 }
-
-function App() {
-  const [caseData, setCaseData] = useState(null);
-
-  return (
-    <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-      <h1>🕵️ 버윅 미스터리 사건 생성기 🔍</h1>
-      <button onClick={() => setCaseData(generateCase())}>사건 생성하기</button>
-
-      {caseData && (
-        <div style={{ marginTop: "2rem", border: "1px solid #ccc", padding: "1rem", borderRadius: "8px" }}>
-          {Object.entries(caseData).map(([key, value]) => (
-            <p key={key}><strong>{key}:</strong> {Array.isArray(value) ? value.join(", ") : value}</p>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-generateCase({ includeFakeTestimonies: true, includeFakeEvidence: false })
-import { useState } from 'react';
-
-const suspects = [
-  { code: "D", name: "데스먼드 던컨", validMotives: [1, 2, 3] },
-  { code: "E", name: "에밀리 에크하트", validMotives: [4, 5, 6] },
-  { code: "Q", name: "퀸튼 퀼스", validMotives: [7, 8, 9] },
-  { code: "R", name: "레메디오스 델 리얼", validMotives: [10, 11, 12] },
-  { code: "Y", name: "요리코 야가미", validMotives: [13, 14, 15] },
-  { code: "Z", name: "자카리아 질버", validMotives: [16, 17, 18] },
-];
 
 function App() {
   const [includeFakes, setIncludeFakes] = useState({ testimonies: false, evidence: false });
   const [caseData, setCaseData] = useState(null);
 
   async function generateCaseWithOptions() {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(includeFakes),
-    });
-    const data = await res.json();
-    setCaseData(data);
+    const caseResult = generateCase({ includeFakeTestimonies: includeFakes.testimonies, includeFakeEvidence: includeFakes.evidence });
+    setCaseData(caseResult);
   }
 
   return (
@@ -180,14 +155,7 @@ function App() {
       {caseData && (
         <div style={{ marginTop: "2rem", border: "1px solid #ccc", padding: "1rem", borderRadius: "8px" }}>
           {Object.entries(caseData).map(([key, value]) => (
-            <p key={key}>
-              <strong>{key}:</strong>{' '}
-              {Array.isArray(value) ? (
-                <ul>{value.map((v, i) => <li key={i}>{v}</li>)}</ul>
-              ) : (
-                value
-              )}
-            </p>
+            <p key={key}><strong>{key}:</strong> {Array.isArray(value) ? value.join(", ") : value}</p>
           ))}
         </div>
       )}
@@ -196,5 +164,4 @@ function App() {
 }
 
 export default App;
-
 

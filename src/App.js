@@ -62,6 +62,48 @@ const roomGraph = {
   "침실": ["욕실", "온실", "서재"]
 };
 
+// 가짜 증언 생성
+function generateFakeTestimonies() {
+  const fakeTestimonies = [
+    "가짜 증언 1",
+    "가짜 증언 2",
+    "가짜 증언 3",
+    "가짜 증언 4",
+    "가짜 증언 5",
+  ];
+  return fakeTestimonies[Math.floor(Math.random() * fakeTestimonies.length)];
+}
+
+// 가짜 증거 생성
+function generateFakeEvidence() {
+  const fakeEvidence = [
+    "가짜 증거 1",
+    "가짜 증거 2",
+    "가짜 증거 3",
+  ];
+  return fakeEvidence[Math.floor(Math.random() * fakeEvidence.length)];
+}
+
+function getPaths(start, end, graph) {
+  const paths = [];
+  const dfs = (current, path) => {
+    if (path.length === 5 && current === end) {
+      paths.push([...path]);
+      return;
+    }
+    if (path.length >= 5) return;
+    for (const next of graph[current] || []) {
+      if (!path.includes(next)) {
+        path.push(next);
+        dfs(next, path);
+        path.pop();
+      }
+    }
+  };
+  dfs(start, [start]);
+  return paths;
+}
+
 // 사건 생성 함수
 function generateCase({ includeFakeTestimonies = false, includeFakeEvidence = false }) {
   const startRooms = ["게스트 하우스", "현관 홀", "찻방", "대기실"];
@@ -97,28 +139,6 @@ function generateCase({ includeFakeTestimonies = false, includeFakeEvidence = fa
   }
 
   return result;
-}
-
-// 가짜 증언 생성
-function generateFakeTestimonies() {
-  const fakeTestimonies = [
-    "가짜 증언 1",
-    "가짜 증언 2",
-    "가짜 증언 3",
-    "가짜 증언 4",
-    "가짜 증언 5",
-  ];
-  return fakeTestimonies[Math.floor(Math.random() * fakeTestimonies.length)];
-}
-
-// 가짜 증거 생성
-function generateFakeEvidence() {
-  const fakeEvidence = [
-    "가짜 증거 1",
-    "가짜 증거 2",
-    "가짜 증거 3",
-  ];
-  return fakeEvidence[Math.floor(Math.random() * fakeEvidence.length)];
 }
 
 function App() {
@@ -157,7 +177,14 @@ function App() {
       {caseData && (
         <div style={{ marginTop: "2rem", border: "1px solid #ccc", padding: "1rem", borderRadius: "8px" }}>
           {Object.entries(caseData).map(([key, value]) => (
-            <p key={key}><strong>{key}:</strong> {Array.isArray(value) ? value.join(", ") : value}</p>
+            <p key={key}>
+              <strong>{key}:</strong>{' '}
+              {Array.isArray(value) ? (
+                <ul>{value.map((v, i) => <li key={i}>{v}</li>)}</ul>
+              ) : (
+                value
+              )}
+            </p>
           ))}
         </div>
       )}
